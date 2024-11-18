@@ -1,120 +1,49 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Scanner;
 
-public class CryptoApp {
+public static void main(String[] args) {
+   // Ensure there are exactly 3 command-line arguments
+   if (args.length != 3) {
+      System.err.println("Usage: java CryptoApp <E|D> <RotEncoder|SbsEncoder> <key>");
+      return;
+   }
 
-   public static void main(String[] args) {
-      // Validate command-line arguments
-      if (args.length != 3) {
-         System.err.println("Usage: java CryptoApp <E|D> <RotEncoder|SbsEncoder> <key>");
-         return;
+   // Extract the command-line arguments
+   String mode = args[0];        // "E" for encode, "D" for decode
+   String encoderType = args[1]; // "RotEncoder" or "SbsEncoder"
+   String key = args[2];         // Key for the encoder
+
+   Encoder encoder;
+
+   // Encoder selection based on the type passed as a command-line argument
+   if (encoderType.equals("RotEncoder")) {
+      encoder = new RotEncoder(Integer.parseInt(key)); // Convert key to int for RotEncoder
+   } else if (encoderType.equals("SbsEncoder")) {
+      encoder = new SbsEncoder(key); // Use the key directly for SbsEncoder
+   } else {
+      System.err.println("Invalid encoder type: " + encoderType);
+      return;
+   }
+
+   // Print out the selected encoder type and mode for confirmation
+   System.out.println("Selected encoder: " + encoder);
+   System.out.println("Mode: " + (mode.equals("E") ? "Encoding" : "Decoding"));
+
+   // Initialize Scanner for text input and apply encoding or decoding
+   Scanner in = new Scanner(System.in);
+
+   if (mode.equalsIgnoreCase("E")) {
+      // Encode each line of input
+      while (in.hasNextLine()) {
+         System.out.println(encoder.encode(in.nextLine()));
       }
-
-      String mode = args[0];
-      String encoderType = args[1];
-      String key = args[2];
-
-      // Select and run the specified encoder
-      Encoder encoder;
-      switch (encoderType) {
-         case "RotEncoder":
-            encoder = new RotEncoder(Integer.parseInt(key));
-            break;
-         case "SbsEncoder":
-            encoder = new SbsEncoder(key);
-            break;
-         default:
-            System.err.println("Unknown encoder type: " + encoderType);
-            return;
+   } else if (mode.equalsIgnoreCase("D")) {
+      // Decode each line of input
+      while (in.hasNextLine()) {
+         System.out.println(encoder.decode(in.nextLine()));
       }
-
-      // Example input text for testing
-      String inputText = "ABCD abcd efgh";
-
-      // Perform encoding or decoding
-      String outputText = mode.equals("E") ? encoder.encode(inputText) : encoder.decode(inputText);
-      System.out.println(outputText);
-   }
-}
-
-// Encoder interface
-interface Encoder {
-   String encode(String input);
-   String decode(String input);
-}
-
-// RotEncoder class for Caesar cipher
-class RotEncoder implements Encoder {
-   private final int shift;
-
-   public RotEncoder(int shift) {
-      this.shift = shift;
+   } else {
+      System.err.println("Invalid mode. Use 'E' for Encode or 'D' for Decode.");
    }
 
-   @Override
-   public String encode(String input) {
-      return shiftText(input, shift);
-   }
-
-   @Override
-   public String decode(String input) {
-      return shiftText(input, -shift);
-   }
-
-   private String shiftText(String input, int shift) {
-      StringBuilder result = new StringBuilder();
-      for (char c : input.toCharArray()) {
-         if (Character.isLetter(c)) {
-            char base = Character.isUpperCase(c) ? 'A' : 'a';
-            int shifted = (c - base + shift + 26) % 26 + base;
-            result.append((char) shifted);
-         } else {
-            result.append(c);
-         }
-      }
-      return result.toString();
-   }
-}
-
-// SbsEncoder class for substitution cipher
-class SbsEncoder implements Encoder {
-   private final Map<Character, Character> encodeMap;
-   private final Map<Character, Character> decodeMap;
-
-   public SbsEncoder(String key) {
-      encodeMap = new HashMap<>();
-      decodeMap = new HashMap<>();
-      initializeMaps(key);
-   }
-
-   private void initializeMaps(String key) {
-      String[] pairs = key.split(",");
-      for (String pair : pairs) {
-         char from = pair.charAt(0);
-         char to = pair.charAt(1);
-         encodeMap.put(from, to);
-         decodeMap.put(to, from);
-         // Support both uppercase and lowercase mappings
-         encodeMap.put(Character.toUpperCase(from), Character.toUpperCase(to));
-         decodeMap.put(Character.toUpperCase(to), Character.toUpperCase(from));
-      }
-   }
-
-   @Override
-   public String encode(String input) {
-      return substituteText(input, encodeMap);
-   }
-
-   @Override
-   public String decode(String input) {
-      return substituteText(input, decodeMap);
-   }
-
-   private String substituteText(String input, Map<Character, Character> map) {
-      StringBuilder result = new StringBuilder();
-      for (char c : input.toCharArray()) {
-         result.append(map.getOrDefault(c, c));
-      }
-      return result.toString();
-   }
+   in.close();
 }
