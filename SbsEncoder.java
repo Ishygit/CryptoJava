@@ -11,18 +11,32 @@ public class SbsEncoder implements Encoder {
       initializeMaps(key);
    }
 
+   // Private inner class to represent character pairs
+   private static class CharPair {
+      final char from;
+      final char to;
+
+      CharPair(char from, char to) {
+         this.from = from;
+         this.to = to;
+      }
+   }
+
    private void initializeMaps(String key) {
       String[] pairs = key.split(",");
       for (String pair : pairs) {
          if (pair.length() != 2) {
             throw new IllegalArgumentException("Invalid key for SbsEncoder. Each pair must be two letters.");
          }
-         char from = pair.charAt(0);
-         char to = pair.charAt(1);
-         encodeMap.put(from, to);
-         decodeMap.put(to, from);
-         encodeMap.put(Character.toUpperCase(from), Character.toUpperCase(to));
-         decodeMap.put(Character.toUpperCase(to), Character.toUpperCase(from));
+
+         CharPair charPair = new CharPair(pair.charAt(0), pair.charAt(1));
+
+         //map both lowercase and uppercase characters
+         encodeMap.put(charPair.from, charPair.to);
+         encodeMap.put(Character.toUpperCase(charPair.from), Character.toUpperCase(charPair.to));
+
+         decodeMap.put(charPair.to, charPair.from);
+         decodeMap.put(Character.toUpperCase(charPair.to), Character.toUpperCase(charPair.from));
       }
    }
 
@@ -38,8 +52,8 @@ public class SbsEncoder implements Encoder {
 
    private String substituteText(String input, Map<Character, Character> map) {
       StringBuilder result = new StringBuilder();
-      for (char c : input.toCharArray()) {
-         result.append(map.getOrDefault(c, c));
+      for (char c : input.toCharArray()) { //for-each loop for characters
+         result.append(map.getOrDefault(c, c)); //default to original char if no substitute
       }
       return result.toString();
    }
