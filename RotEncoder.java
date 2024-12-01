@@ -1,5 +1,12 @@
 public class RotEncoder implements Encoder {
-   private static final int shift = 13; //constant offset for ROT13
+   private final int shift; //constant offset for ROT13
+
+   public RotEncoder(int shift) throws CAppException {
+      if (shift <= 0){
+         throw new CAppException("Bad Offset "+ shift);
+      }
+      this.shift = shift;
+   }
 
    @Override
    public String encode(String input) {
@@ -16,7 +23,7 @@ public class RotEncoder implements Encoder {
       for (char c : input.toCharArray()) {
          if (Character.isLetter(c)) {
             char base = Character.isUpperCase(c) ? 'A' : 'a';
-            int shifted = (c - base + RotEncoder.shift + 26) % 26 + base;
+            int shifted = (c - base + shift + 26) % 26 + base;
             result.append((char) shifted);
          } else {
             result.append(c); //non-letters remain unchanged

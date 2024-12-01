@@ -5,7 +5,7 @@ public class SbsEncoder implements Encoder {
    private final Map<Character, Character> encodeMap;
    private final Map<Character, Character> decodeMap;
 
-   public SbsEncoder(String key) {
+   public SbsEncoder(String key) throws CAppException {
       encodeMap = new HashMap<>();
       decodeMap = new HashMap<>();
       initializeMaps(key);
@@ -22,11 +22,12 @@ public class SbsEncoder implements Encoder {
       }
    }
 
-   private void initializeMaps(String key) {
+   private void initializeMaps(String key) throws CAppException{
       String[] pairs = key.split(",");
       for (String pair : pairs) {
-         if (pair.length() != 2) {
-            throw new IllegalArgumentException("Invalid key for SbsEncoder. Each pair must be two letters.");
+         if (pair.length() != 2 || !Character.isLetter(pair.charAt(0))
+                 || !Character.isLetter(pair.charAt(1))) {
+            throw new CAppException("Bad code pair:" + pair);
          }
 
          CharPair charPair = new CharPair(pair.charAt(0), pair.charAt(1));
