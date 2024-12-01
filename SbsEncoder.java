@@ -43,4 +43,9 @@ public class SbsEncoder implements Encoder {
       }
       return result.toString();
    }
+
+   @Override
+   public String toString() {
+      return getClass().getSimpleName(); //return class name only
+   }
 }
