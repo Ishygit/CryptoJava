@@ -1,31 +1,32 @@
 public class RotEncoder implements Encoder {
-   private final int shift;
-
-   public RotEncoder(int shift) {
-      this.shift = shift;
-   }
+   private static final int shift = 13; //constant offset for ROT13
 
    @Override
    public String encode(String input) {
-      return shiftText(input, shift);
+      return shiftText(input);
    }
 
    @Override
    public String decode(String input) {
-      return shiftText(input, -shift);
+      return shiftText(input); //Decoding is the same as encoding in ROT13
    }
 
-   private String shiftText(String input, int shift) {
+   private String shiftText(String input) {
       StringBuilder result = new StringBuilder();
       for (char c : input.toCharArray()) {
          if (Character.isLetter(c)) {
             char base = Character.isUpperCase(c) ? 'A' : 'a';
-            int shifted = (c - base + shift + 26) % 26 + base;
+            int shifted = (c - base + RotEncoder.shift + 26) % 26 + base;
             result.append((char) shifted);
          } else {
-            result.append(c);
+            result.append(c); //non-letters remain unchanged
          }
       }
       return result.toString();
+   }
+
+   @Override
+   public String toString(){
+      return getClass().getSimpleName(); // Return only the class name
    }
 }

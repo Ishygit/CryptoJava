@@ -16,7 +16,7 @@ public static void main(String[] args) {
 
    // Encoder selection based on the type passed as a command-line argument
    if (encoderType.equals("RotEncoder")) {
-      encoder = new RotEncoder(Integer.parseInt(key)); // Convert key to int for RotEncoder
+      encoder = new RotEncoder(); //
    } else if (encoderType.equals("SbsEncoder")) {
       encoder = new SbsEncoder(key); // Use the key directly for SbsEncoder
    } else {
@@ -26,7 +26,7 @@ public static void main(String[] args) {
 
    // Print out the selected encoder type and mode for confirmation
    System.out.println("Selected encoder: " + encoder);
-   System.out.println("Mode: " + (mode.equals("E") ? "Encoding" : "Decoding"));
+   System.out.println("Mode: " + ("E".equals(mode) ? "Encoding" : "Decoding"));
 
    // Initialize Scanner for text input and apply encoding or decoding
    Scanner in = new Scanner(System.in);
