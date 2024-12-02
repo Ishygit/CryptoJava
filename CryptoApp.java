@@ -32,7 +32,8 @@ public class CryptoApp {
 
          // Print out the selected encoder type and mode for confirmation
          System.out.println("Selected encoder: " + encoder);
-         System.out.println("Mode: " + (mode.equals("E") ? "Encoding" : "Decoding"));
+         System.out.println("Mode: " + (mode.equals("E") ? "Encoding" :
+                 "Decoding"));
 
          // Initialize Scanner for text input and apply encoding or decoding
          Scanner in = new Scanner(System.in);
@@ -48,7 +49,8 @@ public class CryptoApp {
                System.out.println(encoder.decode(in.nextLine()));
             }
          } else {
-            throw new CAppException("Invalid mode. Use 'E' for Encode or 'D' for Decode.");
+            throw new CAppException("Invalid mode. " +
+                    "Use 'E' for Encode or 'D' for Decode.");
          }
          in.close();
       }catch (CAppException e) {

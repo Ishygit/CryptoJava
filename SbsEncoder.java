@@ -34,10 +34,12 @@ public class SbsEncoder implements Encoder {
 
          //map both lowercase and uppercase characters
          encodeMap.put(charPair.from, charPair.to);
-         encodeMap.put(Character.toUpperCase(charPair.from), Character.toUpperCase(charPair.to));
+         encodeMap.put(Character.toUpperCase(charPair.from),
+                 Character.toUpperCase(charPair.to));
 
          decodeMap.put(charPair.to, charPair.from);
-         decodeMap.put(Character.toUpperCase(charPair.to), Character.toUpperCase(charPair.from));
+         decodeMap.put(Character.toUpperCase(charPair.to),
+                 Character.toUpperCase(charPair.from));
       }
    }
 
